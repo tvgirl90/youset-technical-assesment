@@ -1,4 +1,11 @@
-const insuranceData = [
+interface InsurancePackage {
+    id: string;
+    insurerName: string;
+    description: string;
+    price: string;
+}
+
+const insuranceData: InsurancePackage[] = [
     {
         id: "Package#1",
         insurerName: "Proteco Insurance",

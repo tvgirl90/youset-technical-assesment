@@ -1,5 +1,5 @@
 import { Button, Typography, Container, Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField, makeStyles } from "@material-ui/core";
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
 interface FormProps {
     chosenPolicy: string;
@@ -23,6 +23,12 @@ const useStyles = makeStyles({
         '& .MuiFormControl-root': {
             width: '100%',
         }
+    },
+    padding: {
+        paddingBottom: "5px"
+    },
+    smallFont: {
+        fontSize: "0.75rem"
     }
 })
 
@@ -36,7 +42,6 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
         gender: "",
     }
     const [formValues, setFormValues] = useState(defaultFormValues);
-    const [isValid, setIsValid] = useState(false)
     const [isDone, setIsDone] = useState(false)
 
     const handleOnChange = (e: any) => {
@@ -47,7 +52,7 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
         });
     };
 
-    const isEmail = (email: string) => /\S+@\S+\.\S+/.test(email); ///^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+    const isEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
     const [errors, setErrors] = useState<Errors>({})
 
@@ -78,24 +83,16 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
             formErrors.gender = "Please, select a value";
         }
 
-        if (formErrors.age === undefined && formErrors.email === undefined && formErrors.gender === undefined) {
-            alert("youpiii")
-            setIsValid(true)
-        }
         setErrors(formErrors)
+
+        return formErrors.age === undefined && formErrors.email === undefined && formErrors.gender === undefined
+
     };
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
-        console.log(e.target.elements)
-        console.log(formValues)
+        const isValid: boolean = validate(e.target.elements) 
 
-        validate(e.target.elements)
-    }
-
-
-    useEffect(() => {
-        console.log("is valid", isValid)
         if (isValid) {
             const params = {
                 user: {
@@ -110,7 +107,8 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                 method: 'POST',
                 body: JSON.stringify(params),
                 headers: {
-                    accept: 'application/json',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
                 },
             }
 
@@ -124,12 +122,12 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                     console.log("error!!")
                     console.log(rejected);
                 });
-            // je le mets ici puisqu le fetch ne marche pas
+            // je le mets ici puisqu le fetch ne marche pas, sinon ça aurait été
+            // dans le 2eme then 
             setIsDone(true)
 
         }
-    });
-
+    }
 
     return (
         <React.Fragment>
@@ -145,16 +143,15 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                         </Container>
                     </Box>
                     <form className={classes.root} autoComplete="off" noValidate onSubmit={handleSubmit}>
-                        <Typography>{chosenPolicy}</Typography>
                         <Grid container direction="column" xs={12} spacing={4} >
                             <Grid item >
-                                <InputLabel style={{ paddingBottom: 5 }}>What is your email?</InputLabel>
+                                <InputLabel className={classes.padding}>What is your email?</InputLabel>
                                 <TextField
                                     required
                                     id="email"
                                     name="email"
                                     type={"email"}
-                                    variant="outlined"
+                                    variant="standard"
                                     onChange={handleOnChange}
                                     error={errors.email !== undefined}
                                     helperText={errors.email}
@@ -162,13 +159,13 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                             </Grid>
 
                             <Grid item >
-                                <InputLabel style={{ paddingBottom: 5 }}>How old are you?</InputLabel>
+                                <InputLabel className={classes.padding}>How old are you?</InputLabel>
                                 <TextField
                                     required
                                     id="age"
                                     name="age"
                                     type={"number"}
-                                    variant="outlined"
+                                    variant="standard"
                                     onChange={handleOnChange}
                                     error={errors.age !== undefined}
                                     helperText={errors.age}
@@ -186,7 +183,7 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                                         <MenuItem key="Men" value="Men">Men</MenuItem>
                                         <MenuItem key="Other" value="Other">Other</MenuItem>
                                     </Select>
-                                    {errors.gender && <Typography color="error">{errors.gender}</Typography>}
+                                    {errors.gender && <Typography className={classes.smallFont} color="error">{errors.gender}</Typography>}
                                 </FormControl>
                             </Grid>
                             <Grid item>
@@ -207,14 +204,17 @@ const MiniForm: React.FunctionComponent<FormProps> = ({ chosenPolicy, onCancel }
                     </form>
                 </div>
                 :
-                <Box mb={3}>
-                    <Container maxWidth="md">
-                        <Typography variant="h5" component="span" color="primary"> done!</Typography>
+                <Grid className={classes.root} container direction="column" alignItems="center" justifyContent="center">
+                    <Grid item>
+                        <Typography variant="h5" component="div" align="center" color="primary"> You're All Set!</Typography>
+                        <Typography variant="h5" component="div" align="center"> Look for a confirmation email from us and happy to have you on board!</Typography>
+                    </Grid>
+                    <Grid item>
                         <Button variant="outlined" color="secondary" onClick={() => onCancel()}>
                             Back To Main Page
                         </Button>
-                    </Container>
-                </Box>
+                    </Grid>
+                </Grid>
             }
         </React.Fragment>
     )

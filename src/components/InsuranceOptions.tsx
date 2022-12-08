@@ -1,7 +1,7 @@
-import { makeStyles, Grid, Card, CardContent, Typography, CardActions, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import React from "react";
 import InsuranceOptionCard from "./InsuranceOptionCard";
-import insuranceData from "./data";
+import insuranceData from "../data";
 
 interface InsuranceOptionsProps {
   onSelectOption: (policyId: string) => void;

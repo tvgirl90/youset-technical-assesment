@@ -1,13 +1,16 @@
 import { AppBar, Box, Container, Grid, makeStyles, ThemeProvider, Toolbar, Typography } from "@material-ui/core";
-import InsuranceOptions from "./InsuranceOptions";
-import MiniForm from "./MiniForm"
+import InsuranceOptions from "./components/InsuranceOptions";
+import MiniForm from "./components/MiniForm"
 import { theme } from "./theme";
 import { useState } from "react";
 
 const useStyles = makeStyles({
   addingMargin: {
     marginTop: "2%"
-  }
+  },
+  miniFormWidth: {
+    width: "60%"
+  },
 })
 
 export const App: React.FunctionComponent = () => {
@@ -38,7 +41,7 @@ export const App: React.FunctionComponent = () => {
           <div className="content">
             <Grid container direction="column" alignItems="center" justifyContent="center">
               {viewForm ?
-                <Grid item style={{width: "60%"}}>
+                <Grid item className={classes.miniFormWidth} >
                   <MiniForm chosenPolicy={chosenPolicy} onCancel={onCancel} />
                 </Grid>
                 :
@@ -46,7 +49,7 @@ export const App: React.FunctionComponent = () => {
                   <Grid item>
                     <Box mb={3}>
                       <Container maxWidth="md" className={classes.addingMargin}>
-                        <Typography align="center" variant="h3" component="h2" gutterBottom>
+                        <Typography align="center" gutterBottom>
                           <Typography variant="h4" component="span" color="primary"> Rely on us </Typography>
                           <Typography variant="h4" component="span"> with your insurance policy.</Typography>
                         </Typography>
@@ -55,10 +58,10 @@ export const App: React.FunctionComponent = () => {
                     </Box>
                   </Grid>
                   <Grid item className={classes.addingMargin}>
-                    <InsuranceOptions  onSelectOption={onClick} />
+                    <InsuranceOptions onSelectOption={onClick} />
                   </Grid>
                 </div>
-                }
+              }
             </Grid>
           </div>
         </div>
